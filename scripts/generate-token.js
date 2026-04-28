@@ -19,14 +19,14 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ENV_LOCAL = path.resolve(__dirname, '../.env.local');
+const ENV_LOCAL = path.resolve(__dirname, '../.env');
 
 // ============================================
 // 設定
 // ============================================
 
 const JWT_SECRET = process.env.JWT_SECRET || '';
-const JWT_SALT   = process.env.JWT_SALT   || '';
+const JWT_SALT = process.env.JWT_SALT || '';
 
 if (!JWT_SECRET || !JWT_SALT) {
   console.error('\n❌ エラー: JWT_SECRET と JWT_SALT を環境変数で設定してください\n');
@@ -45,13 +45,13 @@ if (!JWT_SECRET || !JWT_SALT) {
 const TWO_WEEKS = 60 * 60 * 24 * 14;
 const now = Math.floor(Date.now() / 1000);
 
-const header  = { alg: 'HS256', typ: 'JWT' };
+const header = { alg: 'HS256', typ: 'JWT' };
 const payload = {
-  sub:  'mcp-client',
-  iat:  now,
-  exp:  now + TWO_WEEKS,
+  sub: 'mcp-client',
+  iat: now,
+  exp: now + TWO_WEEKS,
   salt: JWT_SALT,
-  jti:  crypto.randomUUID(),
+  jti: crypto.randomUUID(),
 };
 
 function base64url(obj) {
@@ -60,9 +60,9 @@ function base64url(obj) {
     .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
 }
 
-const headerB64  = base64url(header);
+const headerB64 = base64url(header);
 const payloadB64 = base64url(payload);
-const message    = `${headerB64}.${payloadB64}`;
+const message = `${headerB64}.${payloadB64}`;
 
 const signature = crypto
   .createHmac('sha256', JWT_SECRET)
@@ -73,7 +73,7 @@ const signature = crypto
 const token = `${message}.${signature}`;
 
 // ============================================
-// .env.local 自動更新
+// .env 自動更新
 // ============================================
 
 if (fs.existsSync(ENV_LOCAL)) {
@@ -84,7 +84,7 @@ if (fs.existsSync(ENV_LOCAL)) {
     content += `\nMCP_SERVER_AUTH_TOKEN=${token}\n`;
   }
   fs.writeFileSync(ENV_LOCAL, content);
-  console.log('\n✅ .env.local を更新しました');
+  console.log('\n✅ .env を更新しました');
 }
 
 // ============================================

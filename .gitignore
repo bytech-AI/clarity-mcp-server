@@ -28,3 +28,6 @@ yarn-error.log*
 # OS specific files
 .DS_Store
 Thumbs.db
+
+# スクリプト実行ログ
+scripts/*.md
