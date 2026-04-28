@@ -7,6 +7,10 @@ dist/
 *.dxt
 *.mcpb
 
+# Next.js
+.next/
+next-env.d.ts
+
 # Logs
 logs/
 *.log
